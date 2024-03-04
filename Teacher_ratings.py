@@ -7,7 +7,7 @@ df = pd.read_csv(file_path)
 
 # Teacher ratings
 variables_of_interest = ["TC_reading", "TC_writing", "TC_comprehension",
-                         "TC_maths", "TC_imagin_creat", "TC_oral_comm", "TC_prob_solving"]
+                         "TC_maths", "TC_imagin_creat", "TC_oral_comm", "TC_prob_solving", "Gender_MF"]
 df_subset = df[variables_of_interest]
 
 # Labels
@@ -30,13 +30,13 @@ sns.set(style="whitegrid")
 # Plot 1 - distribution teacher ratings
 fig, axes = plt.subplots(2, 2, figsize=(10, 10))
 
-variables_1 = ["TC_reading", "TC_writing", "TC_maths"]
+variables_1 = ["TC_prob_solving", "TC_maths", "TC_comprehension"]
 for i, variable in enumerate(variables_1):
     row = i // 2
     col = i % 2
     sns.countplot(data=df_subset, x=variable, palette="pastel", ax=axes[row, col])
-    axes[row, col].set_xticklabels(category_labels)  # Set the category labels
-    axes[row, col].set_xlabel(f"{variable_labels[variable]} Ratings")  # Set the variable label
+    axes[row, col].set_xticklabels(category_labels)
+    axes[row, col].set_xlabel(f"{variable_labels[variable]} Ratings")
     axes[row, col].set_ylabel("Count")
     axes[row, col].set_title(f"Distribution of {variable_labels[variable]} Ratings")
 
@@ -49,13 +49,80 @@ plt.show()
 # Plot 2 - distribution teacher ratings
 fig, axes = plt.subplots(2, 2, figsize=(10, 10))
 
-variables_2 = ["TC_comprehension", "TC_imagin_creat", "TC_oral_comm", "TC_prob_solving"]
+variables_2 = ["TC_reading", "TC_writing", "TC_oral_comm", "TC_imagin_creat"]
 for i, variable in enumerate(variables_2):
     sns.countplot(data=df_subset, x=variable, palette="pastel", ax=axes[i // 2, i % 2])
-    axes[i // 2, i % 2].set_xticklabels(category_labels)  # Set the category labels
-    axes[i // 2, i % 2].set_xlabel(f"{variable_labels[variable]} Ratings")  # Set the variable label
+    axes[i // 2, i % 2].set_xticklabels(category_labels)
+    axes[i // 2, i % 2].set_xlabel(f"{variable_labels[variable]} Ratings")
     axes[i // 2, i % 2].set_ylabel("Count")
     axes[i // 2, i % 2].set_title(f"Distribution of {variable_labels[variable]} Ratings")
+
+plt.tight_layout()
+plt.show()
+
+# Plot 3 - distribution teacher ratings by gender
+fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+variables_3 = ["TC_prob_solving", "TC_maths", "TC_comprehension"]
+
+for i, variable in enumerate(variables_3):
+    sns.countplot(data=df_subset, x=variable, hue="Gender_MF", palette="pastel", ax=axes[i // 2, i % 2])
+    axes[i // 2, i % 2].set_xticklabels(category_labels)
+    axes[i // 2, i % 2].set_xlabel(f"{variable_labels[variable]} Ratings")
+    axes[i // 2, i % 2].set_ylabel("Count")
+    axes[i // 2, i % 2].set_title(f"Distribution of {variable_labels[variable]} Ratings by Gender")
+    axes[i // 2, i % 2].legend(["Male", "Female"])
+
+axes[1, 1].axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# Plot 4 - distribution teacher ratings by gender
+fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+variables_4 = ["TC_reading", "TC_writing", "TC_oral_comm", "TC_imagin_creat"]
+
+for i, variable in enumerate(variables_4):
+    sns.countplot(data=df_subset, x=variable, hue="Gender_MF", palette="pastel", ax=axes[i // 2, i % 2])
+    axes[i // 2, i % 2].set_xticklabels(category_labels)
+    axes[i // 2, i % 2].set_xlabel(f"{variable_labels[variable]} Ratings")
+    axes[i // 2, i % 2].set_ylabel("Count")
+    axes[i // 2, i % 2].set_title(f"Distribution of {variable_labels[variable]} Ratings by Gender")
+    axes[i // 2, i % 2].legend(["Male", "Female"])
+
+plt.tight_layout()
+plt.show()
+
+# Dropping rows with missing values:
+
+df_subset_complete = df_subset.dropna()
+fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+variables_3 = ["TC_prob_solving", "TC_maths", "TC_comprehension"]
+for i, variable in enumerate(variables_3):
+    sns.countplot(data=df_subset_complete, x=variable, hue="Gender_MF", palette="pastel", ax=axes[i // 2, i % 2])
+    axes[i // 2, i % 2].set_xticklabels(category_labels)
+    axes[i // 2, i % 2].set_xlabel(f"{variable_labels[variable]} Ratings")
+    axes[i // 2, i % 2].set_ylabel("Count")
+    axes[i // 2, i % 2].set_title(f"Distribution of {variable_labels[variable]} Ratings by Gender")
+    axes[i // 2, i % 2].legend(["Male", "Female"])
+
+axes[1, 1].axis('off')
+
+plt.tight_layout()
+plt.show()
+
+fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+variables_4 = ["TC_reading", "TC_writing", "TC_oral_comm", "TC_imagin_creat"]
+for i, variable in enumerate(variables_4):
+    sns.countplot(data=df_subset_complete, x=variable, hue="Gender_MF", palette="pastel", ax=axes[i // 2, i % 2])
+    axes[i // 2, i % 2].set_xticklabels(category_labels)
+    axes[i // 2, i % 2].set_xlabel(f"{variable_labels[variable]} Ratings")
+    axes[i // 2, i % 2].set_ylabel("Count")
+    axes[i // 2, i % 2].set_title(f"Distribution of {variable_labels[variable]} Ratings by Gender")
+    axes[i // 2, i % 2].legend(["Male", "Female"])
 
 plt.tight_layout()
 plt.show()
