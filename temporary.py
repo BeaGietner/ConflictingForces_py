@@ -141,7 +141,6 @@ plt.show()
 
 # Correlation coefficients comparison:
     
-
 data = pd.DataFrame({
     'Pair': ['Reading * Comprehension', 'Problem Solving * Maths', 'Reading * Writing',
              'Writing * Comprehension', 'Comprehension * Problem Solving', 'Comprehension * Maths',
@@ -333,7 +332,6 @@ subset_df.dropna(inplace=True)
 scaler = StandardScaler()
 scaled_data = scaler.fit_transform(subset_df)
 
-# Perform PCA
 pca = PCA()
 pca.fit(scaled_data)
 
@@ -506,12 +504,7 @@ ols_model = LinearRegression()
 ols_model.fit(X_train_ols, y_train_ols)
 ols_predictions = ols_model.predict(X_test_ols)
 
-
-import pandas as pd
-import numpy as np
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
+#-----------------------
 
 predictors = ["Agreeable_W2_PCG", "Conscientious_W2_PCG", "Emo_Stability_W2_PCG",
               "Extravert_W2_PCG", "Openness_W2_PCG",
@@ -578,21 +571,54 @@ print("Top 20 Predictor Variables and Their Cumulative Loadings for the First 20
 for i, (predictor, loading) in enumerate(sorted_predictor_cumulative_loadings.items(), start=1):
     print(f"{i}. {predictor}: {loading:.2f}")
     
-    
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
+#-----------------------
 
-pca = PCA(n_components=3)
-pca_result = pca.fit_transform(scaled_data)
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(pca_result[:, 0], pca_result[:, 1], pca_result[:, 2], alpha=0.6)
-ax.set_xlabel('PC1')
-ax.set_ylabel('PC2')
-ax.set_zlabel('PC3')
-ax.set_title('3D PCA')
+predictors_TIPI = ["Agreeable_W2_PCG", "Conscientious_W2_PCG", "Emo_Stability_W2_PCG",
+              "Extravert_W2_PCG", "Openness_W2_PCG",
+              "Agreeable_W3_PCG", "Conscientious_W3_PCG", "Emo_Stability_W3_PCG",
+              "Extravert_W3_PCG", "Openness_W3_PCG",
+              "Agreeable_W3_SCG", "Conscientious_W3_SCG", "Emo_Stability_W3_SCG",
+              "Extravert_W3_SCG", "Openness_W3_SCG",
+              "Agreeable_W3_YP", "Conscientious_W3_YP", "Emo_Stability_W3_YP", 
+              "Extravert_W3_YP", "Openness_W3_YP"]
+
+data_TIPI = Merged_Child_subset[predictors_TIPI].dropna()
+
+scaler = StandardScaler()
+scaled_data_TIPI = scaler.fit_transform(data_TIPI)
+
+pca_TIPI = PCA() 
+pca_result_TIPI = pca_TIPI.fit(scaled_data_TIPI)  
+
+plt.plot(range(1, pca_result_TIPI.n_components_ + 1), np.cumsum(pca_result_TIPI.explained_variance_ratio_), marker='o', linestyle='--')
+plt.title('Explained Variance Ratio - TIPI scores W2/W3')
+plt.xlabel('Number of Principal Components')
+plt.ylabel('Cumulative Explained Variance')
+plt.grid(True)
 plt.show()
+
+loadings_TIPI = pca_result_TIPI.components_.T
+print(loadings_TIPI)
+
+sorted_loadings_idx = np.argsort(np.abs(loadings_TIPI[:, 0]))[::-1]
+top_20_contributors = loadings_TIPI[sorted_loadings_idx[:20], :]  
+variable_names = data_TIPI.columns[sorted_loadings_idx[:20]]  
+for i, var_name in enumerate(variable_names):
+    print(f"{var_name}: {top_20_contributors[:, i]}")
+loadings_df_TIPI = pd.DataFrame(top_20_contributors, index=variable_names, columns=[f"Dim.{i}" for i in range(1, top_20_contributors.shape[1] + 1)])
+print(loadings_df_TIPI)
+print(loadings_TIPI.shape)
+ 
+
+cumulative_abs_loadings_TIPI = np.sum(np.abs(loadings_TIPI[:, :20]), axis=0)
+sorted_cumulative_loadings_TIPI = np.sort(cumulative_abs_loadings_TIPI)[::-1]
+top_20_cumulative_loadings_TIPI = sorted_cumulative_loadings_TIPI[:20]
+predictor_cumulative_loadings_TIPI = dict(zip(predictors_TIPI, cumulative_abs_loadings_TIPI))
+sorted_predictor_cumulative_loadings_TIPI = {k: v for k, v in sorted(predictor_cumulative_loadings_TIPI.items(), key=lambda item: item[1], reverse=True)}
+print("Top 20 Predictor Variables and Their Cumulative Loadings for all Principal Components:")
+for i, (predictor, loading) in enumerate(sorted_predictor_cumulative_loadings_TIPI.items(), start=1):
+    print(f"{i}. {predictor}: {loading:.2f}")
+
+
+
 
