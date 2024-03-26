@@ -620,5 +620,3 @@ for i, (predictor, loading) in enumerate(sorted_predictor_cumulative_loadings_TI
     print(f"{i}. {predictor}: {loading:.2f}")
 
 
-
-
