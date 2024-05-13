@@ -620,3 +620,22 @@ for i, (predictor, loading) in enumerate(sorted_predictor_cumulative_loadings_TI
     print(f"{i}. {predictor}: {loading:.2f}")
 
 
+# Oaxaca-Blinder decomposition
+
+file_path = "C:/Users/bgiet/OneDrive/Documents/GitHub/ConflictingForces/ConflictingForces/sensitive_files/ConflictingForcesSensitive/combined_data_clean.csv"
+combined_data_clean = pd.read_csv(file_path)
+df = pd.read_csv(file_path)
+
+import pandas as pd
+import statsmodels.api as sm
+from statsmodels.stats.oaxaca import OaxacaBlinder
+
+endog = combined_data_clean['Maths_points']
+exog = combined_data_clean[['Drum_VR_W2_p', 'Drum_NA_W2_p', 'BAS_TS_Mat_W2',
+                            'SDQ_emot_PCG_W2', 'SDQ_cond_PCG_W2', 
+                            'SDQ_hyper_PCG_W2', 'SDQ_peer_PCG_W2']]
+
+bifurcate = combined_data_clean['Gender']
+oaxaca_model = OaxacaBlinder(endog=endog, exog=exog, bifurcate=bifurcate)
+results = oaxaca_model.fit()
+print(results.summary())
