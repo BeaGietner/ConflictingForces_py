@@ -639,3 +639,4 @@ bifurcate = combined_data_clean['Gender']
 oaxaca_model = OaxacaBlinder(endog=endog, exog=exog, bifurcate=bifurcate)
 results = oaxaca_model.fit()
 print(results.summary())
+
